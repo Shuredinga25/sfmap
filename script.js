@@ -16,7 +16,7 @@ const resources = [
 
 let selectedCell = null;
 let currentLevel = "0";
-let selectedImage = null; // Добавим переменную для хранения выбранной картинки
+let selectedImage = null;
 
 // Создаем сетку 6x6
 const grid = document.getElementById("grid");
@@ -25,7 +25,44 @@ for (let i = 0; i < 36; i++) {
     cell.classList.add("cell");
     cell.textContent = "Пусто";
     cell.addEventListener("click", () => openResourceDialog(i));
+
+    // Добавляем порядковый номер клетки
+    const cellNumber = document.createElement("div");
+    cellNumber.classList.add("cell-number");
+    cellNumber.textContent = i + 1; // Нумерация с 1 до 36
+    cell.appendChild(cellNumber);
+
     grid.appendChild(cell);
+}
+
+// Открываем диалог изменения названия
+function openTitleEditor() {
+    document.getElementById("titleEditorDialog").style.display = "flex";
+}
+
+// Закрываем диалог изменения названия
+function closeTitleEditor() {
+    document.getElementById("titleEditorDialog").style.display = "none";
+}
+
+// Изменяем название
+function changeTitle() {
+    const titleInput = document.getElementById("titleInput");
+    const newTitle = titleInput.value.trim();
+    if (newTitle) {
+        document.getElementById("title").textContent = newTitle;
+    }
+    closeTitleEditor();
+}
+
+// Очищаем клетку
+function clearCell() {
+    const cell = grid.children[selectedCell];
+    cell.innerHTML = `
+        Пусто
+        <div class="cell-number">${selectedCell + 1}</div>
+    `;
+    closeResourceDialog();
 }
 
 // Открываем диалог выбора ресурса
@@ -47,7 +84,7 @@ function closeResourceDialog() {
 
 // Выбираем ресурс и открываем диалог выбора уровня
 function selectResource(image) {
-    selectedImage = image; // Сохраняем выбранную картинку
+    selectedImage = image;
     closeResourceDialog();
     currentLevel = "0";
     updateLevelDisplay();
@@ -89,5 +126,6 @@ function confirmLevel() {
     cell.innerHTML = `
         <img src="${selectedImage}" alt="Ресурс" width="50" height="50">
         <div class="level">${currentLevel}</div>
+        <div class="cell-number">${selectedCell + 1}</div>
     `;
 }
