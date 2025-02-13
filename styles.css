@@ -4,10 +4,27 @@ body {
     padding: 20px;
 }
 
+#titleContainer {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#title {
+    margin: 0;
+}
+
+#editIcon {
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
 #grid {
     display: grid;
-    grid-template-columns: repeat(6, 50px);
-    grid-template-rows: repeat(6, 50px);
+    grid-template-columns: repeat(6, 60px);
+    grid-template-rows: repeat(6, 60px);
     gap: 5px;
     margin: 20px auto;
     justify-content: center;
@@ -34,6 +51,15 @@ body {
     bottom: 2px;
     right: 2px;
     font-size: 16px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 2px;
+}
+
+.cell .cell-number {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    font-size: 12px;
     background: rgba(255, 255, 255, 0.8);
     padding: 2px;
 }
