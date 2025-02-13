@@ -26,11 +26,16 @@ for (let i = 0; i < 36; i++) {
     cell.textContent = "Пусто";
     cell.addEventListener("click", () => openResourceDialog(i));
 
+    // Вычисляем номер клетки
+    const row = 5 - Math.floor(i / 6); // Обратный порядок строк (снизу вверх)
+    const col = i % 6; // Столбцы идут слева направо
+    const cellNumber = row * 6 + col + 1; // Нумерация с 1 до 36
+
     // Добавляем порядковый номер клетки
-    const cellNumber = document.createElement("div");
-    cellNumber.classList.add("cell-number");
-    cellNumber.textContent = i + 1; // Нумерация с 1 до 36
-    cell.appendChild(cellNumber);
+    const cellNumberElement = document.createElement("div");
+    cellNumberElement.classList.add("cell-number");
+    cellNumberElement.textContent = cellNumber;
+    cell.appendChild(cellNumberElement);
 
     grid.appendChild(cell);
 }
