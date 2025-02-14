@@ -17,6 +17,7 @@ const resources = [
 let selectedCell = null;
 let currentLevel = "0";
 let selectedImage = null;
+let isEditMode = false; // Режим редактирования (открыть/закрыть)
 
 // Создаем сетку 6x6
 const grid = document.getElementById("grid");
@@ -24,7 +25,7 @@ for (let i = 0; i < 36; i++) {
     const cell = document.createElement("div");
     cell.classList.add("cell");
     cell.textContent = "Пусто";
-    cell.addEventListener("click", () => openResourceDialog(i));
+    cell.addEventListener("click", () => handleCellClick(i));
 
     // Вычисляем номер клетки
     const row = 5 - Math.floor(i / 6); // Обратный порядок строк (снизу вверх)
@@ -38,6 +39,26 @@ for (let i = 0; i < 36; i++) {
     cell.appendChild(cellNumberElement);
 
     grid.appendChild(cell);
+}
+
+// Обработка клика по клетке
+function handleCellClick(cellIndex) {
+    if (isEditMode) {
+        // Режим "открыть/закрыть"
+        const cell = grid.children[cellIndex];
+        cell.classList.toggle("closed");
+    } else {
+        // Обычный режим
+        openResourceDialog(cellIndex);
+    }
+}
+
+// Переключение режима
+function toggleMode() {
+    const toggleButton = document.getElementById("toggleModeButton");
+    isEditMode = !isEditMode;
+    toggleButton.classList.toggle("active", isEditMode);
+    toggleButton.textContent = isEditMode ? "Режим: Открыть/Закрыть" : "Режим: Обычный";
 }
 
 // Открываем диалог изменения названия
@@ -65,7 +86,7 @@ function clearCell() {
     const cell = grid.children[selectedCell];
     cell.innerHTML = `
         Пусто
-        <div class="cell-number">${selectedCell + 1}</div>
+        <div class="cell-number">${cell.querySelector('.cell-number').textContent}</div>
     `;
     closeResourceDialog();
 }
@@ -131,6 +152,70 @@ function confirmLevel() {
     cell.innerHTML = `
         <img src="${selectedImage}" alt="Ресурс" width="50" height="50">
         <div class="level">${currentLevel}</div>
-        <div class="cell-number">${selectedCell + 1}</div>
+        <div class="cell-number">${cell.querySelector('.cell-number').textContent}</div>
     `;
+}
+
+// Функция для копирования текста в буфер обмена
+function copyText() {
+    const textArea = document.getElementById("exportImportText");
+    textArea.select();
+    document.execCommand("copy");
+}
+
+// Функция для очистки текстового поля
+function clearText() {
+    const textArea = document.getElementById("exportImportText");
+    textArea.value = "";
+}
+
+// Функция для экспорта данных
+function exportData() {
+    const data = {
+        title: document.getElementById("title").textContent,
+        cells: []
+    };
+
+    // Собираем данные о каждой клетке
+    const cells = document.querySelectorAll(".cell");
+    cells.forEach((cell, index) => {
+        const cellData = {
+            index: index,
+            content: cell.innerHTML,
+            isClosed: cell.classList.contains("closed")
+        };
+        data.cells.push(cellData);
+    });
+
+    // Преобразуем данные в JSON и выводим в текстовое поле
+    const jsonData = JSON.stringify(data);
+    document.getElementById("exportImportText").value = jsonData;
+}
+
+// Функция для импорта данных
+function importData() {
+    const textArea = document.getElementById("exportImportText");
+    const jsonData = textArea.value;
+
+    try {
+        const data = JSON.parse(jsonData);
+
+        // Восстанавливаем название карты
+        document.getElementById("title").textContent = data.title;
+
+        // Восстанавливаем клетки
+        data.cells.forEach(cellData => {
+            const cell = document.querySelectorAll(".cell")[cellData.index];
+            cell.innerHTML = cellData.content;
+            if (cellData.isClosed) {
+                cell.classList.add("closed");
+            } else {
+                cell.classList.remove("closed");
+            }
+        });
+
+        alert("Данные успешно импортированы!");
+    } catch (error) {
+        alert("Ошибка при импорте данных. Проверьте корректность кода.");
+    }
 }
