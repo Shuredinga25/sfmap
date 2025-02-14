@@ -1,22 +1,22 @@
 const resources = [
-    { name: "Антиматерия", image: "images/1.png" },
-    { name: "Титан", image: "images/2.png" },
-    { name: "Кремний", image: "images/3.png" },
-    { name: "Энергия", image: "images/4.png" },
-    { name: "Наниты", image: "images/5.png" },
-    { name: "Воронка искривления времени", image: "images/6.png" },
-    { name: "Древний монолит угасшей империи", image: "images/7.png" },
-    { name: "Остатки рабочих дронов древних цивилизаций", image: "images/8.png" },
-    { name: "Знания по инженерии", image: "images/9.png" },
-    { name: "Знания по нанотехнологиям", image: "images/10.png" },
-    { name: "Знания по физике", image: "images/11.png" },	
-    { name: "Знания по энергетике", image: "images/12.png" },	
-    // Добавь остальные ресурсы с путями к картинкам
+    { name: "Антиматерия", image: "images/1.png", index: "01" },
+    { name: "Титан", image: "images/2.png", index: "02" },
+    { name: "Кремний", image: "images/3.png", index: "03" },
+    { name: "Энергия", image: "images/4.png", index: "04" },
+    { name: "Наниты", image: "images/5.png", index: "05" },
+    { name: "Воронка искривления времени", image: "images/6.png", index: "06" },
+    { name: "Древний монолит угасшей империи", image: "images/7.png", index: "07" },
+    { name: "Остатки рабочих дронов древних цивилизаций", image: "images/8.png", index: "08" },
+    { name: "Знания по инженерии", image: "images/9.png", index: "09" },
+    { name: "Знания по нанотехнологиям", image: "images/10.png", index: "10" },
+    { name: "Знания по физике", image: "images/11.png", index: "11" },
+    { name: "Знания по энергетике", image: "images/12.png", index: "12" },
 ];
 
 let selectedCell = null;
 let currentLevel = "0";
 let selectedImage = null;
+let selectedResourceIndex = "00"; // Индекс выбранного ресурса
 let isEditMode = false; // Режим редактирования (открыть/закрыть)
 
 // Создаем сетку 6x6
@@ -96,7 +96,7 @@ function openResourceDialog(cellIndex) {
     selectedCell = cellIndex;
     const resourceList = document.getElementById("resourceList");
     resourceList.innerHTML = resources.map(resource => `
-        <button onclick="selectResource('${resource.image}')">
+        <button onclick="selectResource('${resource.image}', '${resource.index}')">
             <img src="${resource.image}" alt="${resource.name}" width="50" height="50">
         </button>
     `).join("");
@@ -109,8 +109,9 @@ function closeResourceDialog() {
 }
 
 // Выбираем ресурс и открываем диалог выбора уровня
-function selectResource(image) {
+function selectResource(image, resourceIndex) {
     selectedImage = image;
+    selectedResourceIndex = resourceIndex; // Сохраняем индекс ресурса
     closeResourceDialog();
     currentLevel = "0";
     updateLevelDisplay();
@@ -150,7 +151,7 @@ function confirmLevel() {
     closeLevelDialog();
     const cell = grid.children[selectedCell];
     cell.innerHTML = `
-        <img src="${selectedImage}" alt="Ресурс" width="50" height="50">
+        <img src="${selectedImage}" alt="Ресурс" width="50" height="50" data-resource-index="${selectedResourceIndex}">
         <div class="level">${currentLevel}</div>
         <div class="cell-number">${cell.querySelector('.cell-number').textContent}</div>
     `;
@@ -171,43 +172,83 @@ function clearText() {
 
 // Функция для экспорта данных
 function exportData() {
-    const data = {
-        title: document.getElementById("title").textContent,
-        cells: []
-    };
+    const data = [];
 
     // Собираем данные о каждой клетке
     const cells = document.querySelectorAll(".cell");
     cells.forEach((cell, index) => {
-        const cellData = {
-            index: index,
-            content: cell.innerHTML,
-            isClosed: cell.classList.contains("closed")
-        };
-        data.cells.push(cellData);
+        const resourceIndex = getResourceIndex(cell); // Индекс ресурса
+        const level = getCellLevel(cell); // Уровень
+        const isClosed = cell.classList.contains("closed") ? 0 : 1; // Состояние клетки (0 - закрыта, 1 - открыта)
+
+        // Если клетка имеет ресурс, уровень или открыта, добавляем её в данные
+        if (resourceIndex !== "00" || level !== "000" || isClosed === 1) {
+            const cellNumber = index + 1; // Номер клетки (от 1 до 36)
+            const resourceCode = resourceIndex; // Код ресурса (уже в формате 01-12)
+            const levelCode = level.padStart(3, "0"); // Код уровня
+            const stateCode = isClosed; // Состояние клетки
+
+            // Формируем строку для клетки
+            const cellData = `${cellNumber}:${resourceCode}:${levelCode}:${stateCode}`;
+            data.push(cellData);
+        }
     });
 
-    // Преобразуем данные в JSON и выводим в текстовое поле
-    const jsonData = JSON.stringify(data);
-    document.getElementById("exportImportText").value = jsonData;
+    // Преобразуем данные в строку и выводим в текстовое поле
+    const exportDataString = data.join("\n");
+    document.getElementById("exportImportText").value = exportDataString;
+}
+
+// Функция для получения индекса ресурса из клетки
+function getResourceIndex(cell) {
+    const img = cell.querySelector("img");
+    if (!img) return "00"; // Если ресурса нет, возвращаем "00"
+    return img.getAttribute("data-resource-index") || "00"; // Возвращаем индекс ресурса или "00", если атрибут отсутствует
+}
+
+// Функция для получения уровня из клетки
+function getCellLevel(cell) {
+    const levelElement = cell.querySelector(".level");
+    return levelElement ? levelElement.textContent.padStart(3, "0") : "000";
 }
 
 // Функция для импорта данных
 function importData() {
     const textArea = document.getElementById("exportImportText");
-    const jsonData = textArea.value;
+    const importDataString = textArea.value;
 
     try {
-        const data = JSON.parse(jsonData);
+        // Очищаем все клетки перед импортом
+        const cells = document.querySelectorAll(".cell");
+        cells.forEach(cell => {
+            cell.innerHTML = `
+                Пусто
+                <div class="cell-number">${cell.querySelector('.cell-number').textContent}</div>
+            `;
+            cell.classList.add("closed"); // По умолчанию все клетки закрыты
+        });
 
-        // Восстанавливаем название карты
-        document.getElementById("title").textContent = data.title;
+        // Разбиваем данные на строки
+        const lines = importDataString.split("\n");
 
-        // Восстанавливаем клетки
-        data.cells.forEach(cellData => {
-            const cell = document.querySelectorAll(".cell")[cellData.index];
-            cell.innerHTML = cellData.content;
-            if (cellData.isClosed) {
+        lines.forEach(line => {
+            const [cellNumber, resourceCode, levelCode, stateCode] = line.split(":");
+
+            const cellIndex = parseInt(cellNumber) - 1; // Индекс клетки (от 0 до 35)
+            const resource = resources.find(res => res.index === resourceCode); // Находим ресурс по индексу
+            const level = parseInt(levelCode); // Уровень
+            const isClosed = parseInt(stateCode) === 0; // Состояние клетки (0 - закрыта, 1 - открыта)
+
+            const cell = cells[cellIndex];
+            if (resource) {
+                cell.innerHTML = `
+                    <img src="${resource.image}" alt="${resource.name}" width="50" height="50" data-resource-index="${resource.index}">
+                    <div class="level">${level}</div>
+                    <div class="cell-number">${cell.querySelector('.cell-number').textContent}</div>
+                `;
+            }
+
+            if (isClosed) {
                 cell.classList.add("closed");
             } else {
                 cell.classList.remove("closed");
