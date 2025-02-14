@@ -62,11 +62,15 @@
     <!-- Контейнер для экспорта/импорта -->
     <div id="exportImportContainer">
         <div id="exportImportControls">
-            <button class="control-button" onclick="copyText()">К</button>
-            <button class="control-button" onclick="clearText()">О</button>
+            <div class="button-row">
+                <button class="control-button" onclick="copyText()">К</button>
+                <button class="control-button" onclick="clearText()">О</button>
+            </div>
             <textarea id="exportImportText"></textarea>
-            <button class="control-button" onclick="importData()">И</button>
-            <button class="control-button" onclick="exportData()">Э</button>
+            <div class="button-row">
+                <button class="control-button" onclick="importData()">И</button>
+                <button class="control-button" onclick="exportData()">Э</button>
+            </div>
         </div>
     </div>
 
