@@ -179,10 +179,6 @@ function clearText() {
 function exportData() {
     const data = [];
 
-    // Добавляем название карты как первую строку
-    const title = document.getElementById("title").textContent;
-    data.push(title);
-
     // Собираем данные о каждой клетке
     const cells = document.querySelectorAll(".cell");
     cells.forEach((cell, index) => {
@@ -199,12 +195,18 @@ function exportData() {
 
             // Формируем строку для клетки
             const cellData = `${cellNumber}:${resourceCode}:${levelCode}:${stateCode}`;
-            data.push(cellData);
+            data.push({ cellNumber, cellData });
         }
     });
 
-    // Преобразуем данные в строку и выводим в текстовое поле
-    const exportDataString = data.join("\n");
+    // Сортируем данные по номеру клетки
+    data.sort((a, b) => a.cellNumber - b.cellNumber);
+
+    // Добавляем название карты как первую строку
+    const title = document.getElementById("title").textContent;
+    const exportDataString = [title, ...data.map(item => item.cellData)].join("\n");
+
+    // Выводим данные в текстовое поле
     document.getElementById("exportImportText").value = exportDataString;
 }
 
