@@ -19,6 +19,16 @@ let selectedImage = null;
 let selectedResourceIndex = "00"; // Индекс выбранного ресурса
 let isEditMode = false; // Режим редактирования (открыть/закрыть)
 
+// Номера клеток в порядке снизу вверх (1 в левом нижнем углу, 36 в правом верхнем)
+const cellNumbers = [
+    31, 32, 33, 34, 35, 36,
+    25, 26, 27, 28, 29, 30,
+    19, 20, 21, 22, 23, 24,
+    13, 14, 15, 16, 17, 18,
+    7, 8, 9, 10, 11, 12,
+    1, 2, 3, 4, 5, 6
+];
+
 // Создаем сетку 6x6
 const grid = document.getElementById("grid");
 for (let i = 0; i < 36; i++) {
@@ -27,15 +37,10 @@ for (let i = 0; i < 36; i++) {
     cell.textContent = "Пусто";
     cell.addEventListener("click", () => handleCellClick(i));
 
-    // Вычисляем номер клетки
-    const row = 5 - Math.floor(i / 6); // Обратный порядок строк (снизу вверх)
-    const col = i % 6; // Столбцы идут слева направо
-    const cellNumber = row * 6 + col + 1; // Нумерация с 1 до 36
-
     // Добавляем порядковый номер клетки
     const cellNumberElement = document.createElement("div");
     cellNumberElement.classList.add("cell-number");
-    cellNumberElement.textContent = cellNumber;
+    cellNumberElement.textContent = cellNumbers[i]; // Используем предопределенный номер
     cell.appendChild(cellNumberElement);
 
     grid.appendChild(cell);
@@ -174,6 +179,10 @@ function clearText() {
 function exportData() {
     const data = [];
 
+    // Добавляем название карты как первую строку
+    const title = document.getElementById("title").textContent;
+    data.push(title);
+
     // Собираем данные о каждой клетке
     const cells = document.querySelectorAll(".cell");
     cells.forEach((cell, index) => {
@@ -183,7 +192,7 @@ function exportData() {
 
         // Если клетка имеет ресурс, уровень или открыта, добавляем её в данные
         if (resourceIndex !== "00" || level !== "000" || isClosed === 1) {
-            const cellNumber = index + 1; // Номер клетки (от 1 до 36)
+            const cellNumber = cellNumbers[index]; // Используем предопределенный номер клетки
             const resourceCode = resourceIndex; // Код ресурса (уже в формате 01-12)
             const levelCode = level.padStart(3, "0"); // Код уровня
             const stateCode = isClosed; // Состояние клетки
@@ -218,6 +227,13 @@ function importData() {
     const importDataString = textArea.value;
 
     try {
+        // Разбиваем данные на строки
+        const lines = importDataString.split("\n");
+
+        // Первая строка — название карты
+        const title = lines[0];
+        document.getElementById("title").textContent = title;
+
         // Очищаем все клетки перед импортом
         const cells = document.querySelectorAll(".cell");
         cells.forEach(cell => {
@@ -228,13 +244,15 @@ function importData() {
             cell.classList.add("closed"); // По умолчанию все клетки закрыты
         });
 
-        // Разбиваем данные на строки
-        const lines = importDataString.split("\n");
-
-        lines.forEach(line => {
+        // Обрабатываем оставшиеся строки (клетки)
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i];
             const [cellNumber, resourceCode, levelCode, stateCode] = line.split(":");
 
-            const cellIndex = parseInt(cellNumber) - 1; // Индекс клетки (от 0 до 35)
+            // Находим индекс клетки по её номеру
+            const cellIndex = cellNumbers.indexOf(parseInt(cellNumber));
+            if (cellIndex === -1) continue; // Если номер клетки не найден, пропускаем
+
             const resource = resources.find(res => res.index === resourceCode); // Находим ресурс по индексу
             const level = parseInt(levelCode); // Уровень
             const isClosed = parseInt(stateCode) === 0; // Состояние клетки (0 - закрыта, 1 - открыта)
@@ -253,7 +271,7 @@ function importData() {
             } else {
                 cell.classList.remove("closed");
             }
-        });
+        }
 
         alert("Данные успешно импортированы!");
     } catch (error) {
