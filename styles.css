@@ -23,8 +23,8 @@ body {
 
 #grid {
     display: grid;
-    grid-template-columns: repeat(6, 50px);
-    grid-template-rows: repeat(6, 50px);
+    grid-template-columns: repeat(6, 60px); /* Увеличиваем размер клеток до 60x60 */
+    grid-template-rows: repeat(6, 60px);
     gap: 5px;
     margin: 20px auto;
     justify-content: center;
@@ -38,6 +38,8 @@ body {
     cursor: pointer;
     background-color: #f0f0f0;
     position: relative;
+    width: 60px; /* Увеличиваем ширину клетки */
+    height: 60px; /* Увеличиваем высоту клетки */
 }
 
 .cell img {
@@ -115,7 +117,13 @@ button {
 
 #exportImportControls {
     display: flex;
+    flex-direction: column;
     align-items: center;
+    gap: 10px;
+}
+
+.button-row {
+    display: flex;
     gap: 10px;
 }
 
@@ -133,11 +141,34 @@ button {
 }
 
 #exportImportText {
-    width: 300px;
-    height: 40px;
+    width: 100%; /* Ширина текстового поля будет адаптироваться под контейнер */
+    max-width: 300px; /* Максимальная ширина текстового поля */
+    height: 60px;
     padding: 10px;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 5px;
     resize: none;
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 600px) {
+    #title {
+        font-size: 24px; /* Уменьшаем размер заголовка на мобильных устройствах */
+    }
+
+    #toggleModeButton {
+        padding: 8px; /* Уменьшаем отступы кнопки */
+        font-size: 14px; /* Уменьшаем размер текста кнопки */
+    }
+
+    #exportImportText {
+        width: 90%; /* Уменьшаем ширину текстового поля на мобильных устройствах */
+    }
+
+    .control-button {
+        width: 35px; /* Уменьшаем размер кнопок для мобильных устройств */
+        height: 35px;
+        font-size: 14px;
+    }
 }
