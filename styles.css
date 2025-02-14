@@ -23,8 +23,8 @@ body {
 
 #grid {
     display: grid;
-    grid-template-columns: repeat(6, 60px);
-    grid-template-rows: repeat(6, 60px);
+    grid-template-columns: repeat(6, 50px);
+    grid-template-rows: repeat(6, 50px);
     gap: 5px;
     margin: 20px auto;
     justify-content: center;
@@ -64,6 +64,10 @@ body {
     padding: 2px;
 }
 
+.cell.closed {
+    background-color: rgba(128, 128, 128, 0.5); /* Полупрозрачный серый фон */
+}
+
 .dialog {
     display: none;
     position: fixed;
@@ -89,7 +93,51 @@ button {
     cursor: pointer;
 }
 
+#toggleModeButton {
+    margin-top: 20px;
+    background-color: #ccc; /* Серая кнопка по умолчанию */
+}
+
+#toggleModeButton.active {
+    background-color: #4CAF50; /* Зелёная кнопка в активном режиме */
+}
+
 #levelDisplay {
     font-size: 24px;
     margin: 10px;
+}
+
+#exportImportContainer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+#exportImportControls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.control-button {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#exportImportText {
+    width: 300px;
+    height: 40px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
 }
