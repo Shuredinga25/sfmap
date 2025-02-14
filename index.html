@@ -13,6 +13,9 @@
     </div>
     <div id="grid"></div>
 
+    <!-- Кнопка для переключения режима -->
+    <button id="toggleModeButton" onclick="toggleMode()">Режим: Обычный</button>
+
     <!-- Диалог выбора ресурса -->
     <div id="resourceDialog" class="dialog">
         <div class="dialog-content">
@@ -53,6 +56,17 @@
             <input type="text" id="titleInput" placeholder="Введите название">
             <button onclick="changeTitle()">Сохранить</button>
             <button onclick="closeTitleEditor()">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- Контейнер для экспорта/импорта -->
+    <div id="exportImportContainer">
+        <div id="exportImportControls">
+            <button class="control-button" onclick="copyText()">К</button>
+            <button class="control-button" onclick="clearText()">О</button>
+            <textarea id="exportImportText"></textarea>
+            <button class="control-button" onclick="importData()">И</button>
+            <button class="control-button" onclick="exportData()">Э</button>
         </div>
     </div>
 
