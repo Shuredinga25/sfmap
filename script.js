@@ -1,16 +1,16 @@
 const resources = [
-    { name: "Антиматерия", image: "images/1.png", index: "01" },
-    { name: "Титан", image: "images/2.png", index: "02" },
-    { name: "Кремний", image: "images/3.png", index: "03" },
-    { name: "Энергия", image: "images/4.png", index: "04" },
-    { name: "Наниты", image: "images/5.png", index: "05" },
-    { name: "Воронка искривления времени", image: "images/6.png", index: "06" },
-    { name: "Древний монолит угасшей империи", image: "images/7.png", index: "07" },
-    { name: "Остатки рабочих дронов древних цивилизаций", image: "images/8.png", index: "08" },
-    { name: "Знания по инженерии", image: "images/9.png", index: "09" },
-    { name: "Знания по нанотехнологиям", image: "images/10.png", index: "10" },
-    { name: "Знания по физике", image: "images/11.png", index: "11" },
-    { name: "Знания по энергетике", image: "images/12.png", index: "12" },
+    { name: "Антиматерия", image: "images/1.png", index: "ан" },
+    { name: "Титан", image: "images/2.png", index: "ти" },
+    { name: "Кремний", image: "images/3.png", index: "кр" },
+    { name: "Энергия", image: "images/4.png", index: "эн" },
+    { name: "Наниты", image: "images/5.png", index: "на" },
+    { name: "Воронка искривления времени", image: "images/6.png", index: "вв" },
+    { name: "Древний монолит угасшей империи", image: "images/7.png", index: "мо" },
+    { name: "Остатки рабочих дронов древних цивилизаций", image: "images/8.png", index: "др" },
+    { name: "Знания по инженерии", image: "images/9.png", index: "зи" },
+    { name: "Знания по нанотехнологиям", image: "images/10.png", index: "зн" },
+    { name: "Знания по физике", image: "images/11.png", index: "зф" },
+    { name: "Знания по энергетике", image: "images/12.png", index: "зэ" },
 ];
 
 let selectedCell = null;
